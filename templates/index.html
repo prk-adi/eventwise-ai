@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Plan weddings, birthdays, and community events with EventWise AI.">
+  <title>EventWise AI — Plan with confidence</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='upgrades.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="EventWise AI home"><span class="brand-mark">✦</span> EventWise <span class="brand-ai">AI</span></a>
+    <span class="top-note">Your event, thoughtfully planned</span>
+  </header>
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">LESS STRESS. MORE CELEBRATION.</p>
+        <h1>Make room for<br><span>the moments that matter.</span></h1>
+        <p class="hero-sub">Build a personalized event plan with an indicative budget estimate, a clear timeline, and a checklist you can actually use.</p>
+        <div class="hero-pills"><span>✦ Weddings</span><span>✦ Birthdays</span><span>✦ Community events</span></div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="art-circle circle-one"></div><div class="art-circle circle-two"></div>
+        <div class="art-card"><span class="art-icon">✿</span><strong>It's all coming together.</strong><small>Your plan, one step at a time.</small><div class="art-progress"><i></i></div><small>Planning progress · ready to begin</small></div>
+        <span class="spark spark-one">✦</span><span class="spark spark-two">✧</span><span class="spark spark-three">✿</span>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="panel form-panel" aria-labelledby="form-title">
+        <div class="section-heading"><div><p class="eyebrow">START WITH THE BASICS</p><h2 id="form-title">Tell us about your event</h2></div><span class="step-badge">01 / 02</span></div>
+        <form id="event-form">
+          <label for="event_type">What are we celebrating?</label>
+          <div class="event-types">
+            <label class="event-choice"><input type="radio" name="event_type" value="wedding"><span class="choice-emoji">💍</span><span>Wedding</span></label>
+            <label class="event-choice"><input type="radio" name="event_type" value="birthday" checked><span class="choice-emoji">🎂</span><span>Birthday</span></label>
+            <label class="event-choice"><input type="radio" name="event_type" value="community"><span class="choice-emoji">🎪</span><span>Community</span></label>
+          </div>
+          <div class="field-grid">
+            <div class="field"><label for="event_date">Event date</label><input id="event_date" name="event_date" type="date"><small id="date-hint" class="field-hint" aria-live="polite">Choose a future date for suggested task deadlines.</small></div>
+            <div class="field"><label for="guests">Expected guests</label><input id="guests" name="guests" type="number" min="1" max="100000" value="50" required></div>
+          </div>
+          <div class="field"><label for="currency">Currency</label><select id="currency" name="currency"><option value="INR">INR ₹</option><option value="USD">USD $</option><option value="GBP">GBP £</option><option value="EUR">EUR €</option></select></div>
+          <p class="field-hint">We’ll estimate a planning budget from your event type, guest count, city, and currency. Add your city for a more relevant estimate.</p>
+          <div class="field"><label for="style">Style or theme</label><input id="style" name="style" maxlength="120" placeholder="e.g. cozy garden, elegant, colorful" value="Warm and welcoming"></div>
+          <div class="field"><label for="location">City or venue area <span class="optional">Optional</span></label><input id="location" name="location" maxlength="120" placeholder="e.g. Bhopal, Madhya Pradesh"></div>
+          <div class="field"><label for="notes">Special requests <span class="optional">Optional</span></label><textarea id="notes" name="notes" rows="3" maxlength="1200" placeholder="Dietary needs, must-have activities, accessibility, or things to avoid..."></textarea></div>
+          <button class="primary-btn" type="submit" id="generate-btn"><span>✦</span> Create my event plan <span class="btn-arrow">→</span></button>
+          <button class="secondary-btn new-plan-btn" type="button" id="new-plan-btn">＋ Start a new plan</button>
+          <p class="privacy-note">Your plan is a starting point. Confirm vendor quotes, availability, and local requirements before booking.</p>
+          <p id="form-error" class="error" role="alert" hidden></p>
+        </form>
+      </section>
+
+      <section class="results-column" aria-live="polite">
+        <div class="panel empty-state" id="empty-state">
+          <div class="empty-illustration"><span>✦</span><div class="empty-calendar">✓<small>YOUR PLAN</small></div><span>✿</span></div>
+          <p class="eyebrow">YOUR NEXT CHAPTER STARTS HERE</p>
+          <h2>Your event plan<br>will live here.</h2>
+          <p>Share a few details and we’ll organize your budget, timeline, ideas, and vendor checklist in one place.</p>
+          <div class="mini-features"><span>◷ Timeline</span><span>◇ Budget</span><span>☑ Checklist</span></div>
+        </div>
+        <div id="results" hidden>
+          <section class="panel saved-plans-panel">
+            <label for="saved-plans">Saved plans</label>
+            <div class="saved-plan-controls">
+              <select id="saved-plans" aria-label="Choose a saved event plan"></select>
+              <button class="secondary-btn" id="delete-plan-btn" type="button">Delete plan</button>
+            </div>
+            <p id="storage-status" class="error" role="status" hidden></p>
+          </section>
+          <section class="panel result-hero">
+            <div><p class="eyebrow">YOUR PERSONALIZED PLAN</p><h2 id="plan-title">Your event plan</h2><p id="plan-summary"></p></div>
+            <span class="mode-tag" id="mode-tag">Planning mode</span>
+          </section>
+          <section class="panel progress-panel" aria-labelledby="progress-title">
+            <div class="section-heading"><div><p class="eyebrow">KEEP MOVING FORWARD</p><h2 id="progress-title">Planning progress</h2></div><span id="progress-percent" class="count-pill">0%</span></div>
+            <progress id="progress-bar" max="100" value="0" aria-label="Overall planning completion">0%</progress>
+            <p id="progress-count" class="small-note" aria-live="polite">0 of 0 checklist items complete</p>
+          </section>
+          <section class="panel">
+            <div class="section-heading"><div><p class="eyebrow">THE VISION</p><h2>Theme & ideas</h2></div><span class="section-icon">✧</span></div>
+            <p id="theme-text" class="theme-text"></p>
+            <ul id="ideas-list" class="idea-list"></ul>
+          </section>
+          <section class="panel">
+            <div class="section-heading"><div><p class="eyebrow">SPEND WITH INTENTION</p><h2>Budget breakdown</h2></div><span class="section-icon">₹</span></div>
+            <div class="budget-total"><div><small id="budget-label">Estimated planning budget</small><strong id="budget-total"></strong><small id="budget-estimate-note"></small><small id="budget-actual-total"></small><small id="budget-remaining"></small></div><div class="budget-meter"><span id="budget-meter"></span></div></div>
+            <div id="budget-list" class="budget-list"></div>
+            <p class="small-note">These are estimates, not quotes. Adjust them after receiving vendor prices.</p>
+          </section>
+          <section class="panel">
+            <div class="section-heading"><div><p class="eyebrow">ONE STEP AT A TIME</p><h2>Planning timeline</h2></div><span class="count-pill" id="timeline-count">0 tasks</span></div>
+            <div id="timeline-list" class="task-list"></div>
+            <button class="secondary-btn add-item-btn" id="add-task-btn" type="button">＋ Add timeline task</button>
+          </section>
+          <section class="panel">
+            <div class="section-heading"><div><p class="eyebrow">YOUR TO-DO LIST</p><h2>Vendor checklist</h2></div><span class="count-pill" id="vendor-count">0 items</span></div>
+            <div id="vendor-list" class="vendor-list"></div>
+            <button class="secondary-btn add-item-btn" id="add-vendor-btn" type="button">＋ Add checklist item</button>
+          </section>
+          <section class="panel assumptions-panel">
+            <h3>Good to know</h3><ul id="assumptions-list"></ul>
+          </section>
+          <div class="result-actions"><button class="secondary-btn" id="download-btn" type="button">↓ Download plan (.json)</button><button class="secondary-btn" id="csv-btn" type="button">↓ Export budget (.csv)</button><button class="secondary-btn" id="print-btn" type="button">↗ Print / Save PDF</button></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="assistant-panel panel">
+      <div class="assistant-intro"><div class="assistant-icon">✦</div><div><p class="eyebrow">YOUR PLANNING PARTNER</p><h2>Ask EventWise AI</h2><p>Need help choosing a theme, cutting costs, or prioritizing tasks? Ask away.</p></div></div>
+      <form id="chat-form" class="chat-form"><label class="sr-only" for="chat-message">Ask an event planning question</label><input id="chat-message" maxlength="1000" placeholder="e.g. How can I save 10% on decorations?" required><button class="primary-btn" type="submit" id="chat-btn">Ask <span>→</span></button></form>
+      <div id="chat-answer" class="chat-answer" role="status" hidden></div>
+      <p class="small-note">AI suggestions may be imperfect. Verify important decisions and all safety-related information.</p>
+    </section>
+    <footer><span>✦ EventWise AI</span><span>Thoughtful plans. Memorable moments.</span></footer>
+  </main>
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</body>
+</html>
